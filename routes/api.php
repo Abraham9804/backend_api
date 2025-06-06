@@ -14,8 +14,8 @@ Route::prefix('/auth')->group(function(){
     Route::post('/register',[AuthController::class, 'funRegister']);
 
     Route::middleware('auth:sanctum')->group(function(){
-        Route::get('/profile',[AuthController::class, 'funPerfil'])->middleware('auth:sanctum');
-        Route::post('/logout', [AuthController::class, 'funLogout']);
+    Route::get('/profile',[AuthController::class, 'funPerfil'])->middleware('auth:sanctum');
+    Route::post('/logout', [AuthController::class, 'funLogout']);
     });
 });
 

@@ -9,14 +9,13 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::get('/test/{edad}', function($edad){
-    return [
-        'nombre' => 'Abraham',
-        'edad' => $edad
-    ];
+Route::prefix('/auth')->group(function(){
+    Route::post('/login', [AuthController::class, "funLogin"]);
+    Route::post('/register',[AuthController::class, 'funRegister']);
+
+    Route::middleware('auth:sanctum')->group(function(){
+        Route::get('/profile',[AuthController::class, 'funPerfil'])->middleware('auth:sanctum');
+        Route::post('/logout', [AuthController::class, 'funLogout']);
+    });
 });
 
-Route::post('/auth/login', [AuthController::class, "funLogin"]);
-Route::post('/auth/register',[AuthController::class, 'funRegister']);
-Route::get('/auth/profile',[AuthController::class, 'funPerfil']);
-Route::post('/auth/logout', [AuthController::class, 'funLogout']);

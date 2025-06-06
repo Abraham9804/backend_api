@@ -39,11 +39,15 @@ class AuthController extends Controller
 
     public function funPerfil(Request $request)
     {
-
+        $perfil = $request->user();
+        return response()->json($perfil,200);
     }
 
     public function funLogout(Request $request)
     {
+        $user = $request->user();
+        $user->tokens()->delete();
 
+        return response()->json(["message"=>"sesion cerrada"]);
     }
 }

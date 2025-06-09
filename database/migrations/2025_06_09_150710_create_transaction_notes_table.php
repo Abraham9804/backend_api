@@ -21,6 +21,9 @@ return new class extends Migration
             $table->decimal('subtotal',10,2)->default(0);
             $table->decimal('taxes',10,2)->default(0);
             $table->decimal('total_discount',10,2)->default(0);
+            $table->decimal('calculated_total',10,2)->default(0);
+            $table->string('note_status',50);
+            $table->text('notes');
             $table->timestamps();
         });
     }

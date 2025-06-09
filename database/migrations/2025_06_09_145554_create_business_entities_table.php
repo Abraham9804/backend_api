@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_warehouse', function (Blueprint $table) {
+        Schema::create('business_entities', function (Blueprint $table) {
             $table->id();
-            $table->integer('current_qty');
-            $table->foreignId('product_id')->constrained()->onDelete('restrict')->onUpdate('cascade');
-            $table->foreignId('warehouse_id')->constrained()->onDelete('restrict')->onUpdate('cascade');
+            $table->string('name');
+            $table->string('rfc',30);
+            $table->string('phone',15);
+            $table->string('address',100);
+            $table->string('email',50);
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_warehouse');
+        Schema::dropIfExists('business_entities');
     }
 };

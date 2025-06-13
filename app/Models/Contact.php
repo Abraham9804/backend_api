@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contact extends Model
 {
-    //
+    public function businessEntity()
+    {
+        return $this->belongsTo(BusinessEntity::class);
+    }
 }

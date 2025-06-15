@@ -10,7 +10,7 @@ class Product extends Model
     {
         return $this->belongsToMany(Warehouse::class)
         ->withTimestamps()
-        ->withPivot(['current_qty','updated_at']);
+        ->withPivot(["current_qty"]);
     }
 
     public function category()

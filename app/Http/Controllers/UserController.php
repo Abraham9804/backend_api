@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,7 +12,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::get();
+        return $users;
     }
 
     /**
@@ -19,7 +21,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|unique:users|email',
+            'password' => 'required|min:6|max:50,confirmed'
+        ]);
+
+        User::create($validated);
+
+        return response()->json(['message'=>'usuario creado']);
     }
 
     /**
@@ -27,7 +37,8 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        return response()->json($user);
     }
 
     /**
@@ -35,7 +46,23 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'password' => 'nullable|min:6|confirmed'
+        ]);
+
+        $user = User::findOrFail($id);
+
+        if(!empty($validated['password'])){
+            $validated['password'] = bcrypt($validated['password']);
+        }else{
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return response()->json(["message"=>"usuario actualizado"]);
     }
 
     /**
@@ -43,6 +70,9 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return response()->json(['message'=>'usuario eliminado']);
     }
 }

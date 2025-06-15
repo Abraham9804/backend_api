@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,8 +22,11 @@ Route::prefix('/auth')->group(function(){
     });
 });
 
-Route::get('/users',[UsuarioController::class, 'funListar']);
-Route::post('/users',[UsuarioController::class, 'funGuardar']);
-Route::get('/users/{id}',[UsuarioController::class, 'funMostrar']);
-Route::put('/users/{id}',[UsuarioController::class, 'funModificar']);
-Route::delete('/users/{id}',[UsuarioController::class, 'funEliminar']);
+
+Route::get('/users',[UserController::class, 'index']);
+Route::post('/users',[UserController::class, 'store']);
+Route::get('/users/{id}',[UserController::class, 'show']);
+Route::put('/users/{id}',[UserController::class, 'update']);
+Route::delete('/users/{id}',[UserController::class, 'funEliminar']);
+
+Route::apiResource('/role',[RoleController::class]);

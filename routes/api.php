@@ -48,3 +48,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('transactionNote',TransactionNoteController::class);
     Route::apiResource('warehouse',WarehouseController::class);
 });
+
+Route::get('/login', function(){
+    return response()->json(['message'=>'no autorizado']);
+})->name('login');

@@ -13,9 +13,18 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
-        $limit = $request->limit;
+        $limit = isset($request->limit)?$request->limit:'2';
 
-        return Product::where("name","like","%$search%")->paginate($limit);
+        if(isset($request->search)){
+            $products = Product::where("name","LIKE","%$search%")
+                                ->orwhere("description","LIKE","%$search%")
+                                ->orderby('id','asc');  
+        }else{
+            $products = Product::orderby('id','asc');                 
+        }
+
+        $products = $products->with(['category','warehouse'])->paginate($limit);
+        return response()->json($products);
     }
 
     /**
@@ -46,17 +55,14 @@ class ProductController extends Controller
         return response()->json(["message"=>"producto creado"]);
     }
 
-    public function uploadImage(Request $request)
-    {   
-
-    }
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+        $product = Product::findOrFail($id);
+        return response()->json($product);
     }
 
     /**
@@ -64,7 +70,27 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $product = Product::findOrFail($id);
+        $validated = $request->validate([
+            'name' => 'required|string|max:200|min:3',
+            'description' => 'nullable|string|max:1000',
+            "bar_code" => "nullable|string|max:100|unique:products,bar_code,{$id}",
+            'umc' => 'nullable|string|max:50',
+            'manufacturer_name' => 'nullable|string|max:100',
+            'category_id' => 'required|integer|exists:categories,id',
+            'sale_price' => 'required|decimal:2|min:0.00',
+            'min_stock' => 'required|integer|min:0',
+            'url_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'active' => 'required|boolean'
+        ]);
+
+        if($request->hasFile('url_image')){
+            $path = $request->file('url_image')->store('products','public');
+            $validated['url_image'] = $path;
+        }
+
+        $product->update($validated);
+        return response()->json(["message"=>"Producto Actualizado"]);
     }
 
     /**

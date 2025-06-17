@@ -90,7 +90,7 @@ class ProductController extends Controller
         }
 
         $product->update($validated);
-        return response()->json(["message"=>"Producto Actualizado"]);
+        return response()->json(["message"=>"Producto Actualizado","producto"=>$product]);
     }
 
     /**
@@ -98,6 +98,9 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $product = Product::findOrFail($id);
+        $product->delete();
+
+        return response()->json(["message"=>"producto eliminado"]);
     }
 }

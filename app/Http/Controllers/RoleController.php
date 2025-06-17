@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -11,7 +12,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
+        $roles = Role::all();
+        return response()->json($roles);
     }
 
     /**
@@ -19,7 +21,13 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|max:50|unique:roles,name',
+            'description' => 'required'
+        ]);
+
+        Role::create($validated);
+        return response()->json(['message'=>'Rol creado']);
     }
 
     /**
@@ -27,7 +35,9 @@ class RoleController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $rol = Role::findOrFail($id);
+
+        return response()->json($rol);
     }
 
     /**
@@ -35,7 +45,14 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $rol = Role::findOrFail($id);
+        $validated = $request->validate([
+            'name' => "required|max:50|unique:roles,name,{$id}",
+            'description' => 'required'
+        ]);
+
+        $rol->update($validated);
+        return response()->json(['message'=>'rol actualizado']);
     }
 
     /**
@@ -43,6 +60,9 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $role = Role::findOrFail($id);
+        $role->delete();
+
+        return response()->json(['message'=>'rol eliminado']);
     }
 }

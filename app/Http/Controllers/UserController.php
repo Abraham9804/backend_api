@@ -10,10 +10,20 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $users = User::get();
-        return $users;
+    public function index(Request $request)
+    {   
+        
+        $limit = $request->input('limit',2);
+        $users = User::orderBy('id','asc')->paginate($limit);
+        $search = $request->search;
+        if(isset($search)){
+            $users = User::where('name','LIKE',"%$search%")->orderBy('id','asc')->paginate($limit);
+        }else{
+            $users = User::orderBy('id','asc')->paginate($limit);
+        }
+
+       
+        return response()->json($users);
     }
 
     /**

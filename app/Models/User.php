@@ -57,11 +57,15 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
 
-    public function assingRole($role){
+    /*public function assingRole($role){
         if(is_string($role)){
-            $role = Role::where("nombre",$role)->firstOrFail;
+            $role = Role::where("name",$role)->firstOrFail;
         }
         $this->role()->sync($role, false);
+    }*/
+
+    public function permission(){
+        return $this->role->map->permission->flatten()->pluck("name")->unique();
     }
 
     public function branch()

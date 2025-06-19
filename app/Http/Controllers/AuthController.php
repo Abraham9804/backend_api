@@ -21,7 +21,20 @@ class AuthController extends Controller
         }
 
         $token = $request->user()->createToken('Auth token')->plainTextToken;
-        return response()->json(["token"=>$token, "user"=>$request->user()]);
+
+        $user = $request->user();
+        $permissions = [];
+        if(count($user->role)>0){
+            $permissions = $user->role()
+                            ->with('permission')
+                            ->get()
+                            ->pluck('permission')
+                            ->flatten()
+                            ->map(function($permiso){
+                                return array(['id'=>$permiso->id,'name'=>$permiso->name]);
+                            });
+        }
+        return response()->json(["token"=>$token, "user"=>$request->user(),'permisos'=> $permissions]);
     }
 
     public function funRegister(Request $request)

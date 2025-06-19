@@ -14,14 +14,15 @@ class UserController extends Controller
     {   
         
         $limit = $request->input('limit',2);
-        $users = User::orderBy('id','asc')->paginate($limit);
+        //$users = User::orderBy('id','asc')->paginate($limit);
         $search = $request->search;
         if(isset($search)){
-            $users = User::where('name','LIKE',"%$search%")->orderBy('id','asc')->paginate($limit);
+            $users = User::where('name','LIKE',"%$search%")->orderBy('id','asc');
         }else{
-            $users = User::orderBy('id','asc')->paginate($limit);
+            $users = User::orderBy('id','asc');
         }
 
+        $users = $users->with('role')->paginate($limit);
        
         return response()->json($users);
     }
@@ -84,5 +85,12 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json(['message'=>'usuario eliminado']);
+    }
+
+    public function assingRoles(Request $request, $id){
+        $user = User::findOrFail($id);
+        $user->role()->sync($request['roles_id']);
+
+        return response()->json(['message'=>'roles actualizados']);
     }
 }

@@ -31,6 +31,9 @@ Route::prefix('/auth')->group(function(){
 });
 
 Route::middleware('auth:sanctum')->group(function(){
+    
+    Route::post('/users/{id}/roles',[UserController::class, 'assingRoles']); //asignar rol a usuario 
+    Route::post('/role/{id}/permissions',[RoleController::class,'assingPermission']); //asignar permiso a rol
     Route::get('/users',[UserController::class, 'index']);
     Route::post('/users',[UserController::class, 'store']);
     Route::get('/users/{id}',[UserController::class, 'show']);

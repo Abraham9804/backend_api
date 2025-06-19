@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class RoleController extends Controller
 {
@@ -11,7 +12,8 @@ class RoleController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    {   
+        Gate::authorize('visualizar');
         $roles = Role::with(['permission'])->get();
         return response()->json($roles);
     }
@@ -64,5 +66,11 @@ class RoleController extends Controller
         $role->delete();
 
         return response()->json(['message'=>'rol eliminado']);
+    }
+
+    public function assingPermission(Request $request, $id){
+        $role = Role::findOrFail($id);
+        $role->permission()->sync($request['permission_id']);
+        return response()->json(['message'=>'permiso actualizado']);
     }
 }

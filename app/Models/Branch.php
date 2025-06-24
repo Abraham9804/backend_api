@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Branch extends Model
 {
+    protected $fillable = ['name','address','phone','city'];
     public function user()
     {
         return $this->belongsToMany(User::class);

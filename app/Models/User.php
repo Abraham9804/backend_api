@@ -64,6 +64,7 @@ class User extends Authenticatable
         $this->role()->sync($role, false);
     }*/
 
+    //obtener permisos del usuario
     public function permission(){
         return $this->role->map->permission->flatten()->pluck("name")->unique();
     }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Warehouse extends Model
 {
+    protected $fillable = ['name','code','description','branch_id'];
     public function branch()
     {
         return $this->belongsTo(Branch::class);

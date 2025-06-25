@@ -14,14 +14,21 @@ class ProductController extends Controller
     {
         $search = $request->search;
         $limit = isset($request->limit)?$request->limit:'2';
-
+        $warehouse = isset($request->warehouse)?$request->warehouse:'';
+        $products = Product::orderby('id','asc');    
         if(isset($request->search)){
             $products = Product::where("name","LIKE","%$search%")
                                 ->orwhere("description","LIKE","%$search%")
                                 ->orderby('id','asc');  
-        }else{
-            $products = Product::orderby('id','asc');                 
         }
+        if(isset($warehouse)){
+            $products = $products->whereHas('warehouse',function($query) use($warehouse){
+                $query->where('warehouse_id',$warehouse);
+            });
+        }
+    
+                         
+        
 
         $products = $products->with(['category','warehouse'])->paginate($limit);
         return response()->json($products);
